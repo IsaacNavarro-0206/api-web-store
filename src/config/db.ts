@@ -1,17 +1,18 @@
 import mongoose from "mongoose";
 
-export const connectDB = async () => {
+export const connectDB = async (): Promise<void> => {
   try {
-    const mongoUri = process.env.MONGO_URI;
+    await mongoose.connect(
+      process.env.MONGO_URI as string,
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      } as mongoose.ConnectOptions
+    );
 
-    if (!mongoUri) {
-      throw new Error("La variable de entorno MONGO_URI no está definida.");
-    }
-
-    await mongoose.connect(mongoUri);
-
-    console.log("MongoDB connected");
-  } catch (error) {
-    console.log("MongoDB connection failed: ", error);
+    console.log("MongoDB conectado");
+  } catch (error: any) {
+    console.error("Error al conectar BD:", error.message);
+    process.exit(1);
   }
 };
