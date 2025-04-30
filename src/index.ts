@@ -1,7 +1,7 @@
 import express from "express";
-import { connectDB } from "./config/db.ts";
+import { connectDB } from "./config/db";
 import dotenv from "dotenv";
-import itemRoutes from "./routes/item.route.ts";
+import itemRoutes from "./routes/item.route";
 
 dotenv.config(); // Cargar variables de entorno desde el archivo .env
 
