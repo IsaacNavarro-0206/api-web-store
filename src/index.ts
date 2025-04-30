@@ -1,6 +1,7 @@
 import express from "express";
 import { connectDB } from "./config/db.ts";
 import dotenv from "dotenv";
+import itemRoutes from "./routes/item.route.ts";
 
 dotenv.config(); // Cargar variables de entorno desde el archivo .env
 
@@ -10,6 +11,7 @@ const PORT = process.env.PORT || 4000;
 connectDB(); // Conexión a la base de datos
 
 app.use(express.json()); // middleware que transforma la req.body en un json
+app.use(itemRoutes);
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
