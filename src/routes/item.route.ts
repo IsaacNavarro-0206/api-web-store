@@ -3,7 +3,7 @@ import {
   searchItems,
   getItem,
   createItem,
-} from "../controllers/itemController";
+} from "../controllers/itemController.js";
 
 const itemRoutes = Router();
 

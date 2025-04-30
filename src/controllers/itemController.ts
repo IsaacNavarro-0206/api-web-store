@@ -1,6 +1,6 @@
 // Controlador para operaciones relacionadas con los items/productos
 import { Request, Response } from "express";
-import { Item } from "../models/itemModel";
+import { Item } from "../models/itemModel.js";
 
 // Busca items según un término de búsqueda y/o categoría
 export const searchItems = async (req: Request, res: Response) => {
