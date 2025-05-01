@@ -20,8 +20,7 @@ const itemSchema = new Schema<IItem>({
   stock: { type: Number, default: 0 },
   category: { type: String },
   rating: { type: Number, default: 0 },
-  createdAt: { type: Date, default: Date.now },
-  images: [{ type: String }],
+  createdAt: { type: Date, default: new Date() },
 });
 
 export const Item = model<IItem>("Item", itemSchema);
