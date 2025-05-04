@@ -21,6 +21,7 @@ const itemSchema = new Schema<IItem>({
   category: { type: String },
   rating: { type: Number, default: 0 },
   createdAt: { type: Date, default: new Date() },
+  images: [{ type: String }],
 });
 
 export const Item = model<IItem>("Item", itemSchema);
