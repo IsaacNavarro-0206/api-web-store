@@ -6,7 +6,7 @@ import cors from "cors";
 
 dotenv.config(); // Cargar variables de entorno desde el archivo .env
 
-const app = express();
+export const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(
