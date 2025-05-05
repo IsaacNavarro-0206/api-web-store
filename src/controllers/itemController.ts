@@ -47,22 +47,42 @@ const uploadImagesToCloudinary = async (
   return Promise.all(uploadPromises);
 };
 
-// Busca items según un término de búsqueda y/o categoría
+// Busca items según un término de búsqueda
 export const searchItems = async (req: Request, res: Response) => {
   try {
-    // Extrae parámetros de consulta: 'search' para búsqueda por título, 'category' para filtrar por categoría
-    const { search = "", category } = req.query as Record<string, string>;
+    // Añade parámetros de paginación: 'page' para la página actual, 'limit' para ítems por página
+    const {
+      search = "",
+      page = "1",
+      limit = "10",
+    } = req.query as Record<string, string>;
     const filter: any = {};
 
     if (search) filter.title = new RegExp(search, "i"); // Búsqueda insensible a mayúsculas/minúsculas
-    if (category) filter.category = category;
 
-    // Busca los items que coincidan con el filtro
-    const items = await Item.find(filter);
+    // Convierte page y limit a números
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
 
-    res.json({ count: items.length, results: items });
+    // Calcula cuántos documentos omitir
+    const skip = (pageNum - 1) * limitNum;
+
+    // Cuenta el total de items que coinciden con el filtro
+    const totalItems = await Item.countDocuments(filter);
+
+    // Busca los items que coincidan con el filtro, aplicando paginación
+    const items = await Item.find(filter).limit(limitNum).skip(skip);
+
+    // Calcula el total de páginas
+    const totalPages = Math.ceil(totalItems / limitNum);
+
+    res.json({
+      totalItems,
+      totalPages,
+      currentPage: pageNum,
+      results: items,
+    });
   } catch (error: any) {
-    // Manejo de errores en la búsqueda
     console.error("Error buscando items:", error.message);
     res
       .status(500)
@@ -73,7 +93,6 @@ export const searchItems = async (req: Request, res: Response) => {
 // Obtiene un item específico por su ID
 export const getItem = async (req: Request, res: Response): Promise<void> => {
   try {
-    // Busca el item por su ID recibido en los parámetros de la ruta
     const item = await Item.findById(req.params.id);
 
     if (!item) {
@@ -83,7 +102,6 @@ export const getItem = async (req: Request, res: Response): Promise<void> => {
 
     res.json(item);
   } catch (error: any) {
-    // Manejo de errores al obtener el item
     console.error("Error obteniendo item:", error.message);
     res
       .status(500)
@@ -121,10 +139,8 @@ export const createItem = async (req: Request, res: Response) => {
     // Guarda el nuevo item en la base de datos MongoDB.
     await item.save();
 
-    // Responde con el item creado y un estado 201 (Creado).
     res.status(201).json(item);
   } catch (error: any) {
-    // Manejo de errores durante la creación del item o la subida de archivos.
     console.error("Error creando item:", error);
     res
       .status(500)
